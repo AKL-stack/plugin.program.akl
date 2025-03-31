@@ -34,7 +34,7 @@ from resources.lib.launcher import AppLauncher
 from resources.lib.scraper import LocalFilesScraper
 from resources.lib.scanner import RomFolderScanner
 
-from akl import settings, constants, addons, api
+from akl import settings, constants, addons, api, platforms
 from akl.utils import io, kodi, text
 from akl.scrapers import ScraperSettings, ScrapeStrategy
 from akl.launchers import ExecutionSettings, get_executor_factory
@@ -636,6 +636,28 @@ class Source(ROMAddon):
         if scanner.configure():
             scanner.store_settings()
             return
+        
+        kodi.notify_warn('Cancelled configuring scanner')
+
+
+class SingleRomSource(Source):
+    
+    def configure(self):
+        logger.debug('Single ROM Source: Configuring ...')
+        
+        file_path = kodi.dialog_get_file(kodi.translate(40953))
+        if file_path is not None:
+            path = io.FileName(file_path)
+            rom_name = path.getBaseNoExt()
+            
+        rom_name = kodi.dialog_keyboard(kodi.translate(40815), rom_name)
+        if rom_name is None:
+            return
+        
+        dialog = kodi.ListDialog()
+        selected_idx = dialog.select(kodi.translate(41099), platforms.AKL_platform_list)
+        platform = platforms.AKL_platform_list[selected_idx]
+
         
         kodi.notify_warn('Cancelled configuring scanner')
 

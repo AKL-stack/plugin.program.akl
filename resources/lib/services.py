@@ -4,7 +4,8 @@ import sys
 import json
 
 from datetime import datetime
-from distutils.version import LooseVersion
+from packaging.version import Version
+from packaging.version import parse as parse_version
 
 import xbmc
 
@@ -56,9 +57,11 @@ class AppService(object):
             
         db_version = uow.get_database_version()
         logger.debug(f'db.version       "{db_version}"')
-        if db_version is None or LooseVersion(db_version) < LooseVersion(globals.addon_version):
+        
+        
+        if db_version is None or parse_version(db_version) < parse_version(globals.addon_version):
             try:
-                self._do_version_upgrade(uow, LooseVersion(db_version))
+                self._do_version_upgrade(uow, parse_version(db_version))
             except Exception:
                 logger.exception("Failure while doing database migration")
                 kodi.notify_error(kodi.translate(40954))
@@ -103,7 +106,7 @@ class AppService(object):
         
         self._perform_scans()
 
-    def _do_version_upgrade(self, uow: UnitOfWork, db_version: LooseVersion):
+    def _do_version_upgrade(self, uow: UnitOfWork, db_version: Version):
         migrations_files_to_execute = uow.get_migration_files(db_version)
         if len(migrations_files_to_execute) == 0:
             logger.debug('No migrations to execute')
@@ -118,7 +121,7 @@ class AppService(object):
             logger.debug('No new migrations to execute')
             return
         
-        version_to_store = LooseVersion(globals.addon_version)
+        version_to_store = parse_version(globals.addon_version)
         file_version = uow.get_version_from_migration_file(new_migration_files_to_execute[-1])
         if file_version > version_to_store:
             version_to_store = file_version

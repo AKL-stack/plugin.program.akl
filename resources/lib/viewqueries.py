@@ -757,6 +757,9 @@ def qry_listitem_context_menu_items(list_item_data, container_data) -> typing.Li
         commands.append((kodi.translate(40886), _context_menu_url_for(f'/categories/view/{item_id}')))
         commands.append((kodi.translate(40887), _context_menu_url_for(f'/categories/edit/{item_id}')))
         commands.append((kodi.translate(40888), _context_menu_url_for(f'/add/{item_id}/in/{container_id}')))
+        commands.append((kodi.translate(40893), _context_menu_url_for('execute/command/render_category_view', {
+                        'category_id': item_id,
+                        'name': item_name})))
         
     if is_romcollection:
         commands.append((kodi.translate(40891), _context_menu_url_for(f'/romcollection/view/{item_id}')))
@@ -764,6 +767,9 @@ def qry_listitem_context_menu_items(list_item_data, container_data) -> typing.Li
         commands.append((kodi.translate(40922), _context_menu_url_for('/execute/command/execute_all_rulesets', {
             'romcollection_id': item_id
         })))
+        commands.append((kodi.translate(40893), _context_menu_url_for('execute/command/render_romcollection_view', {
+                        'romcollection_id': item_id,
+                        'name': item_name})))
     
     if is_source:
         if item_id and len(item_id) > 0:
@@ -771,6 +777,9 @@ def qry_listitem_context_menu_items(list_item_data, container_data) -> typing.Li
             commands.append((kodi.translate(42046), _context_menu_url_for('/execute/command/scan_roms', {
                 'source_id': item_id
             })))
+            commands.append((kodi.translate(40893), _context_menu_url_for('execute/command/render_source_view', {
+                            'source_id': item_id,
+                            'name': item_name})))
         
     if is_launcher:
         if item_id and len(item_id) > 0:

@@ -2395,7 +2395,7 @@ msgid "Directory or service containing games and ROMs or simply standalone execu
 msgstr ""
 
 msgctxt "#44035"
-msgid "Emulator/application that can launch or execute the source"
+msgid "Emulator/application that can launch or execute the source (games/ROMs)"
 msgstr ""
 
 msgctxt "#44036"

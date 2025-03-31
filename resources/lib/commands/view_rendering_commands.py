@@ -27,6 +27,7 @@ from datetime import timedelta
 from akl import constants, settings
 from akl.utils import kodi
 
+from resources.lib import commands
 from resources.lib.commands.mediator import AppMediator
 from resources.lib import globals
 from resources.lib.repositories import UnitOfWork, CategoryRepository, ROMCollectionRepository, ROMsRepository
@@ -37,12 +38,8 @@ from resources.lib.domain import VirtualCollectionFactory, VirtualCategoryFactor
 
 logger = logging.getLogger(__name__)
 
-RENDER_VIEWS = 'RENDER_VIEWS'
-RENDER_SOURCES_VIEW = 'RENDER_SOURCES_VIEW'
-RENDER_VIRTUAL_VIEWS = 'RENDER_VIRTUAL_VIEWS'
 
-
-@AppMediator.register(RENDER_VIEWS)
+@AppMediator.register(commands.RENDER_VIEWS)
 def cmd_render_views_data(args):
     kodi.notify(kodi.translate(40968))
     force = args['force'] if 'force' in args else False
@@ -69,7 +66,7 @@ def cmd_render_views_data(args):
     kodi.refresh_container()
 
 
-@AppMediator.register('RENDER_CATEGORY_VIEW')
+@AppMediator.register(commands.RENDER_CATEGORY_VIEW)
 def cmd_render_view_data(args):
     if 'name' in args:
         render_selection = kodi.ListDialog().select(kodi.translate(40923), [
@@ -79,7 +76,7 @@ def cmd_render_view_data(args):
         if render_selection is None:
             return
         if render_selection > 0:
-            AppMediator.sync_cmd(RENDER_VIEWS, args)
+            AppMediator.sync_cmd(commands.RENDER_VIEWS, args)
             return
         
     kodi.notify(kodi.translate(40967))
@@ -112,7 +109,7 @@ def cmd_render_view_data(args):
     kodi.refresh_container()
 
 
-@AppMediator.register(RENDER_VIRTUAL_VIEWS)
+@AppMediator.register(commands.RENDER_VIRTUAL_VIEWS)
 def cmd_render_virtual_views(args):
     uow = UnitOfWork(globals.g_PATHS.DATABASE_FILE_PATH)
     do_notification = not settings.getSettingAsBool("display_hide_rendering_notifications")
@@ -148,7 +145,7 @@ def cmd_render_virtual_views(args):
     kodi.refresh_container()
 
 
-@AppMediator.register('RENDER_VCATEGORY_VIEWS')
+@AppMediator.register(commands.RENDER_VCATEGORY_VIEWS)
 def cmd_render_vcategories(args):
     uow = UnitOfWork(globals.g_PATHS.DATABASE_FILE_PATH)
     do_notification = not settings.getSettingAsBool("display_hide_rendering_notifications")
@@ -174,7 +171,7 @@ def cmd_render_vcategories(args):
     kodi.refresh_container()
 
     
-@AppMediator.register('RENDER_VCATEGORY_VIEW')
+@AppMediator.register(commands.RENDER_VCATEGORY_VIEW)
 def cmd_render_vcategory(args):
     if 'name' in args:
         render_selection = kodi.ListDialog().select(kodi.translate(40923), [
@@ -184,7 +181,7 @@ def cmd_render_vcategory(args):
         if render_selection is None:
             return
         if render_selection > 0:
-            AppMediator.sync_cmd(RENDER_VIEWS)
+            AppMediator.sync_cmd(commands.RENDER_VIEWS)
             return
         
     vcategory_id = args['vcategory_id'] if 'vcategory_id' in args else None
@@ -216,7 +213,7 @@ def cmd_render_vcategory(args):
     kodi.refresh_container()
 
 
-@AppMediator.register('RENDER_ROMCOLLECTION_VIEW')
+@AppMediator.register(commands.RENDER_ROMCOLLECTION_VIEW)
 def cmd_render_romcollection_view_data(args):
     if 'name' in args:
         render_selection = kodi.ListDialog().select(kodi.translate(40923), [
@@ -226,7 +223,7 @@ def cmd_render_romcollection_view_data(args):
         if render_selection is None:
             return
         if render_selection > 0:
-            AppMediator.sync_cmd(RENDER_VIEWS, args)
+            AppMediator.sync_cmd(commands.RENDER_VIEWS, args)
             return
         
     romcollection_id = args['romcollection_id'] if 'romcollection_id' in args else None
@@ -250,7 +247,7 @@ def cmd_render_romcollection_view_data(args):
     kodi.refresh_container()
 
 
-@AppMediator.register(RENDER_SOURCES_VIEW)
+@AppMediator.register(commands.RENDER_SOURCES_VIEW)
 def cmd_render_sources_view_data(args):
     do_notification = not settings.getSettingAsBool("display_hide_rendering_notifications")
     
@@ -272,7 +269,7 @@ def cmd_render_sources_view_data(args):
     kodi.refresh_container()
 
 
-@AppMediator.register('RENDER_SOURCE_VIEW')
+@AppMediator.register(commands.RENDER_SOURCE_VIEW)
 def cmd_render_source_view_data(args):
     if 'name' in args:
         render_selection = kodi.ListDialog().select(kodi.translate(40923), [
@@ -282,14 +279,14 @@ def cmd_render_source_view_data(args):
         if render_selection is None:
             return
         if render_selection > 0:
-            AppMediator.sync_cmd(RENDER_VIEWS, args)
+            AppMediator.sync_cmd(commands.RENDER_VIEWS, args)
             return
      
     source_id = args['source_id'] if 'source_id' in args else None
     do_notification = not settings.getSettingAsBool("display_hide_rendering_notifications")
     
     if source_id is None:
-        AppMediator.sync_cmd(RENDER_SOURCES_VIEW, args)
+        AppMediator.sync_cmd(commands.RENDER_SOURCES_VIEW, args)
         return
     
     if do_notification:
@@ -310,7 +307,7 @@ def cmd_render_source_view_data(args):
     kodi.refresh_container()
 
 
-@AppMediator.register('RENDER_VCOLLECTION_VIEW')
+@AppMediator.register(commands.RENDER_VCOLLECTION_VIEW)
 def cmd_render_vcollection(args):
     if 'name' in args:
         render_selection = kodi.ListDialog().select(kodi.translate(40923), [
@@ -320,7 +317,7 @@ def cmd_render_vcollection(args):
         if render_selection is None:
             return
         if render_selection > 0:
-            AppMediator.sync_cmd(RENDER_VIEWS, args)
+            AppMediator.sync_cmd(commands.RENDER_VIEWS, args)
             return
         
     vcollection_id = args['vcollection_id'] if 'vcollection_id' in args else None
@@ -343,7 +340,7 @@ def cmd_render_vcollection(args):
     kodi.refresh_container()
 
 
-@AppMediator.register('RENDER_ROM_VIEWS')
+@AppMediator.register(commands.RENDER_ROM_VIEWS)
 def cmd_render_rom_views(args):
     rom_id = args['rom_id'] if 'rom_id' in args else None
     do_notification = not settings.getSettingAsBool("display_hide_rendering_notifications")
@@ -387,7 +384,7 @@ def cmd_render_rom_views(args):
     kodi.refresh_container()
     
 
-@AppMediator.register('CLEANUP_VIEWS')
+@AppMediator.register(commands.CLEANUP_VIEWS)
 def cmd_cleanup_views(args):
     uow = UnitOfWork(globals.g_PATHS.DATABASE_FILE_PATH)
     with uow:
@@ -738,7 +735,7 @@ def _render_romcollection_listitem(romcollection_obj: ROMCollection) -> dict:
     else:
         url = globals.router.url_for_path(f'collection/{romcollection_obj.get_id()}')
 
-    return { 
+    return {
         'id': romcollection_obj.get_id(),
         'name': romcollection_name,
         'url': url,
